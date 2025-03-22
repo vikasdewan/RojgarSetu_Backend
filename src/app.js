@@ -34,16 +34,19 @@ connectDB()
     
 })
 
+// routes import 
+import userRouter from './routes/user.routes.js';
+import employerRouter from './routes/employer.routes.js'
+import vehicleOwnerRouter from './routes/vehicleOwner.routes.js'
+import jobRouter from './routes/job.routes.js'
+import applicationRouter from './routes/application.routes.js'
+import vehicleRouter from './routes/vehicle.routes.js'
 
-app.get("/", (req, res) => {
-    return res.status(200).json({
-        message: "rojgarsetu backend",
-        success: true,
-    });
-});
 
-const PORT = 8000;
-
-app.listen(PORT, () =>  { 
-    console.log(`Server listening at port ${PORT}`);
-});
+//routes declaration 
+app.use('/api/v1/user',userRouter)
+app.use('/api/v1/vehicleowner',vehicleOwnerRouter)
+app.use('/api/v1/employer',employerRouter)
+app.use('/api/v1/vehicle',vehicleRouter)
+app.use('/api/v1/job',jobRouter)
+app.use('/api/v1/application',applicationRouter)
