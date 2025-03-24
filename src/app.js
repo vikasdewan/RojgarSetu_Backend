@@ -2,8 +2,12 @@ import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import pkg from "body-parser";
-import connectDB from "./db";
+import connectDB from "./db/index.js";
+import dotenv from "dotenv";
 
+dotenv.config({
+    path:"./.env"
+});
 const { urlencoded } = pkg;
 
 const app = express();
