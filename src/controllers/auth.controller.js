@@ -1,8 +1,5 @@
-const User = require("../models/user.model")
-const Worker = require("../models/worker.model")
-const Contractor = require("../models/contractor.model")
-const Owner = require("../models/owner.model")
-const { generateAndSendOTP, verifyOTP } = require("../utils/otp.util")
+import { User, Worker, Contractor, Owner } from "../models/index.js"
+import { generateAndSendOTP, verifyOTP } from "../utils/otp.util.js"
 
 // Register a new user
 const register = async (req, res) => {
@@ -209,11 +206,5 @@ const getCurrentUser = async (req, res) => {
   }
 }
 
-module.exports = {
-  register,
-  login,
-  verifyUserOTP,
-  resendOTP,
-  getCurrentUser,
-}
+export { register, login, verifyUserOTP, resendOTP, getCurrentUser }
 
