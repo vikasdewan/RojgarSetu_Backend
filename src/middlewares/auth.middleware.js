@@ -1,5 +1,5 @@
-const jwt = require("jsonwebtoken")
-const User = require("../models/user.model")
+import jwt from "jsonwebtoken"
+import { User, Worker, Contractor, Owner } from "../models/index.js"
 
 // Middleware to authenticate user using JWT
 const auth = async (req, res, next) => {
@@ -65,13 +65,10 @@ const isProfileComplete = async (req, res, next) => {
     let profile
 
     if (userType === "Worker") {
-      const Worker = require("../models/worker.model")
       profile = await Worker.findById(profileId)
     } else if (userType === "Contractor") {
-      const Contractor = require("../models/contractor.model")
       profile = await Contractor.findById(profileId)
     } else if (userType === "Owner") {
-      const Owner = require("../models/owner.model")
       profile = await Owner.findById(profileId)
     }
 
@@ -88,11 +85,5 @@ const isProfileComplete = async (req, res, next) => {
   }
 }
 
-module.exports = {
-  auth,
-  isWorker,
-  isContractor,
-  isOwner,
-  isProfileComplete,
-}
+export { auth, isWorker, isContractor, isOwner, isProfileComplete }
 
