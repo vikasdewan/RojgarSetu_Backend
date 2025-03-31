@@ -1,7 +1,8 @@
-const express = require("express")
+import express from "express"
+import { auth } from "../middleware/auth.middleware.js"
+import { register, login, verifyUserOTP, resendOTP, getCurrentUser } from "../controllers/auth.controller.js"
+
 const router = express.Router()
-const { auth } = require("../middleware/auth.middleware")
-const { register, login, verifyUserOTP, resendOTP, getCurrentUser } = require("../controllers/auth.controller")
 
 // Register a new user
 router.post("/register", register)
@@ -18,4 +19,5 @@ router.post("/resend-otp", resendOTP)
 // Get current user (protected route)
 router.get("/me", auth, getCurrentUser)
 
-module.exports = router
+export default router
+

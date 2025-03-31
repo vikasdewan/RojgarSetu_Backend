@@ -1,5 +1,5 @@
-const twilio = require("twilio")
-const User = require("../models/user.model")
+import twilio from "twilio"
+import User from "../models/user.model.js"
 
 // Create Twilio client
 const twilioClient = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN)
@@ -115,11 +115,5 @@ const generateAndSendOTP = async (userId) => {
   }
 }
 
-module.exports = {
-  generateOTP,
-  saveOTP,
-  sendOTPBySMS,
-  verifyOTP,
-  generateAndSendOTP,
-}
+export { generateOTP, saveOTP, sendOTPBySMS, verifyOTP, generateAndSendOTP }
 
