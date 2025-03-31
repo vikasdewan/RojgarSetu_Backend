@@ -1,7 +1,4 @@
-const Worker = require("../models/worker.model")
-const Contractor = require("../models/contractor.model")
-const Owner = require("../models/owner.model")
-const User = require("../models/user.model")
+import { Worker, Contractor, Owner } from "../models/index.js"
 
 // Calculate profile completion percentage
 const calculateProfileCompletion = (profile, userType) => {
@@ -161,9 +158,5 @@ const getProfile = async (req, res) => {
   }
 }
 
-module.exports = {
-  completeProfile,
-  getProfile,
-  calculateProfileCompletion,
-}
+export { completeProfile, getProfile, calculateProfileCompletion }
 
