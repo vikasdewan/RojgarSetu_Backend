@@ -1,5 +1,5 @@
 import express from "express"
-import { auth, isContractor, isProfileComplete } from "../middleware/auth.middleware.js"
+import { auth, isContractor, isProfileComplete } from "../middlewares/auth.middleware.js"
 import {
   createJobPost,
   updateJobPost,

@@ -1,5 +1,5 @@
 import express from "express"
-import { auth, isWorker, isProfileComplete } from "../middleware/auth.middleware.js"
+import { auth, isWorker, isProfileComplete } from "../middlewares/auth.middleware.js"
 import {
   getPortfolio,
   applyForJob,
