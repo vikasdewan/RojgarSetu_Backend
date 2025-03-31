@@ -1,4 +1,4 @@
-const mongoose = require("mongoose")
+import mongoose from "mongoose"
 
 const OwnerSchema = new mongoose.Schema({
   name: { type: String, required: true },
@@ -20,5 +20,7 @@ const OwnerSchema = new mongoose.Schema({
   rating: { type: Number, default: 0 },
 })
 
-module.exports = mongoose.model("Owner", OwnerSchema)
+const Owner = mongoose.model("Owner", OwnerSchema)
+
+export default Owner
 

@@ -1,15 +1,11 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose"
 
 const WorkerSchema = new mongoose.Schema({
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   phone: { type: String, required: true },
   otpVerified: { type: Boolean, default: false },
-  currentStatus: {
-    type: String,
-    enum: ["unemployed", "working"],
-    default: "unemployed",
-  },
+  currentStatus: { type: String, enum: ["unemployed", "working"], default: "unemployed" },
   lookingFor: { type: String },
   image: { type: String }, // URL from Cloudinary
   pastExperience: { type: String },
@@ -18,9 +14,10 @@ const WorkerSchema = new mongoose.Schema({
   profileCompletion: { type: Number, default: 0 },
   portfolio: { type: String }, // generated portfolio link or reference
   rating: { type: Number, default: 0 },
-  appliedJobs: [
-    { type: mongoose.Schema.Types.ObjectId, ref: "JobApplication" },
-  ],
-});
+  appliedJobs: [{ type: mongoose.Schema.Types.ObjectId, ref: "JobApplication" }],
+})
 
-module.exports = mongoose.model("Worker", WorkerSchema);
+const Worker = mongoose.model("Worker", WorkerSchema)
+
+export default Worker
+

@@ -1,4 +1,4 @@
-const mongoose = require("mongoose")
+import mongoose from "mongoose"
 
 const JobPostSchema = new mongoose.Schema({
   contractorId: { type: mongoose.Schema.Types.ObjectId, ref: "Contractor", required: true },
@@ -14,5 +14,7 @@ const JobPostSchema = new mongoose.Schema({
   applications: [{ type: mongoose.Schema.Types.ObjectId, ref: "JobApplication" }],
 })
 
-module.exports = mongoose.model("JobPost", JobPostSchema)
+const JobPost = mongoose.model("JobPost", JobPostSchema)
+
+export default JobPost
 

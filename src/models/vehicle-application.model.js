@@ -1,4 +1,4 @@
-const mongoose = require("mongoose")
+import mongoose from "mongoose"
 
 const VehicleApplicationSchema = new mongoose.Schema({
   applicantId: { type: mongoose.Schema.Types.ObjectId, refPath: "applicantModel", required: true },
@@ -12,7 +12,15 @@ const VehicleApplicationSchema = new mongoose.Schema({
   pictures: [{ type: String }], // URLs from Cloudinary
   ownerDetails: { type: String },
   appliedAt: { type: Date, default: Date.now },
+  status: {
+    type: String,
+    enum: ["pending", "accepted", "rejected"],
+    default: "pending",
+  },
+  feedback: { type: String },
 })
 
-module.exports = mongoose.model("VehicleApplication", VehicleApplicationSchema)
+const VehicleApplication = mongoose.model("VehicleApplication", VehicleApplicationSchema)
+
+export default VehicleApplication
 

@@ -1,4 +1,4 @@
-const mongoose = require("mongoose")
+import mongoose from "mongoose"
 
 const ContractorSchema = new mongoose.Schema({
   name: { type: String, required: true },
@@ -25,5 +25,7 @@ const ContractorSchema = new mongoose.Schema({
   vehicleForms: [{ type: mongoose.Schema.Types.ObjectId, ref: "VehicleForm" }],
 })
 
-module.exports = mongoose.model("Contractor", ContractorSchema)
+const Contractor = mongoose.model("Contractor", ContractorSchema)
+
+export default Contractor
 
