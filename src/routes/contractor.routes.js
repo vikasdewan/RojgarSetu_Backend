@@ -1,13 +1,20 @@
 import express from "express"
-import { auth, isContractor, isProfileComplete } from "../middlewares/auth.middleware.js"
+import { auth, isContractor, isProfileComplete } from "../middleware/auth.middleware.js"
 import {
   createJobPost,
   updateJobPost,
   deleteJobPost,
+  viewJob,
+  viewAllJobs,
   createVehicleForm,
   updateVehicleForm,
   deleteVehicleForm,
+  viewVehicle,
+  viewAllVehicles,
   getDashboard,
+  viewAllApplications,
+  viewJobApplications,
+  viewVehicleApplications,
   processJobApplication,
   sendJoiningLetter,
   processVehicleApplication,
@@ -19,18 +26,27 @@ const router = express.Router()
 // All contractor routes are protected
 router.use(auth, isContractor)
 
-// Get contractor dashboard
+// Dashboard
 router.get("/dashboard", getDashboard)
 
-// Job posting routes (requires 90% profile completion)
+// Job posting routes
+router.get("/jobs", viewAllJobs)
+router.get("/job/:id", viewJob)
 router.post("/job", isProfileComplete, createJobPost)
 router.put("/job/:id", isProfileComplete, updateJobPost)
 router.delete("/job/:id", deleteJobPost)
 
-// Vehicle/instrument form routes (requires 90% profile completion)
+// Vehicle/instrument form routes
+router.get("/vehicles", viewAllVehicles)
+router.get("/vehicle/:id", viewVehicle)
 router.post("/vehicle", isProfileComplete, createVehicleForm)
 router.put("/vehicle/:id", isProfileComplete, updateVehicleForm)
 router.delete("/vehicle/:id", deleteVehicleForm)
+
+// Application routes
+router.get("/applications", viewAllApplications)
+router.get("/job/:jobId/applications", viewJobApplications)
+router.get("/vehicle/:vehicleId/applications", viewVehicleApplications)
 
 // Job application processing
 router.put("/application/:applicationId/process", processJobApplication)

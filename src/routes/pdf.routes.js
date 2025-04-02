@@ -1,5 +1,5 @@
 import express from "express"
-import { auth, isContractor } from "../middlewares/auth.middleware.js"
+import { auth, isContractor } from "../middleware/auth.middleware.js"
 import { generatePDF } from "../controllers/pdf.controller.js"
 
 const router = express.Router()
