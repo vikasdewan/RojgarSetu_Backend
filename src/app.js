@@ -121,16 +121,6 @@ app.use((err, req, res, next) => {
   })
 })
 
-// Database connection and server start
-connectDB()
-  .then(() => {
-    server.listen(port, () => {
-      console.log(`Server is running at http://localhost:${port}`)
-    })
-  })
-  .catch((err) => {
-    console.log("MongoDB connection error:", err)
-  })
 
 export default app
 
