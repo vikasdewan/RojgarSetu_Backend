@@ -1,5 +1,5 @@
 import express from "express"
-import { auth } from "../middlewares/auth.middleware.js"
+import { auth } from "../middleware/auth.middleware.js"
 import { getRecommendations } from "../controllers/recommendation.controller.js"
 
 const router = express.Router()

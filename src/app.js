@@ -9,6 +9,19 @@ import { Server } from "socket.io"
 import path from "path"
 import { fileURLToPath } from "url"
 
+// Import routes
+import authRoutes from "./routes/auth.routes.js"
+import profileRoutes from "./routes/profile.routes.js"
+import workerRoutes from "./routes/worker.routes.js"
+import contractorRoutes from "./routes/contractor.routes.js"
+import ownerRoutes from "./routes/owner.routes.js"
+import notificationRoutes from "./routes/notification.routes.js"
+import pdfRoutes from "./routes/pdf.routes.js"
+import recommendationRoutes from "./routes/recommendation.routes.js"
+import jobRoutes from "./routes/job.routes.js"
+import vehicleRoutes from "./routes/vehicle.routes.js"
+
+// Load environment variables
 dotenv.config({
   path: "./.env",
 })
@@ -18,6 +31,7 @@ const { urlencoded } = pkg
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
+// Create Express app and HTTP server
 const app = express()
 const server = http.createServer(app)
 
@@ -30,6 +44,7 @@ const io = new Server(server, {
   },
 })
 
+// Middleware
 app.use(express.json())
 app.use(cookieParser())
 app.use(urlencoded({ extended: true }))
@@ -38,6 +53,7 @@ app.use(express.static("public"))
 // Serve static files from temp directory
 app.use("/temp", express.static(path.join(__dirname, "temp")))
 
+// CORS configuration
 const corsOptions = {
   allowHeaders: ["Content-Type", "Authorization"],
   origin: process.env.FRONTEND_URL || "http://localhost:5173",
@@ -78,6 +94,14 @@ connectDB()
     console.log("Mongo DB connection error :: ", err)
   })
 
+// routes import
+// import userRouter from "./routes/user.routes.js"
+// import employerRouter from "./routes/employer.routes.js"
+// import vehicleOwnerRouter from "./routes/vehicleOwner.routes.js"
+// import jobRouter from "./routes/job.routes.js"
+// import applicationRouter from "./routes/application.routes.js"
+// import vehicleRouter from "./routes/vehicle.routes.js"
+
 // New routes import
 import authRoutes from "./routes/auth.routes.js"
 import profileRoutes from "./routes/profile.routes.js"
@@ -88,6 +112,14 @@ import notificationRoutes from "./routes/notification.routes.js"
 import pdfRoutes from "./routes/pdf.routes.js"
 import recommendationRoutes from "./routes/recommendation.routes.js"
 
+// Existing routes declaration
+// app.use("/api/v1/user", userRouter)
+// app.use("/api/v1/vehicleowner", vehicleOwnerRouter)
+// app.use("/api/v1/employer", employerRouter)
+// app.use("/api/v1/vehicle", vehicleRouter)
+// app.use("/api/v1/job", jobRouter)
+// app.use("/api/v1/application", applicationRouter)
+
 // New routes declaration
 app.use("/api/v1/auth", authRoutes)
 app.use("/api/v1/profile", profileRoutes)
@@ -97,6 +129,13 @@ app.use("/api/v1/owner", ownerRoutes)
 app.use("/api/v1/notifications", notificationRoutes)
 app.use("/api/v1/pdf", pdfRoutes)
 app.use("/api/v1/recommendations", recommendationRoutes)
+app.use("/api/v1/jobs", jobRoutes)
+app.use("/api/v1/vehicles", vehicleRoutes)
+
+// Root route for API health check
+app.get("/", (req, res) => {
+  res.json({ message: "Gig Worker API is running" })
+})
 
 // Error handling middleware
 app.use((err, req, res, next) => {
@@ -107,6 +146,17 @@ app.use((err, req, res, next) => {
     error: err.message,
   })
 })
+
+// Database connection and server start
+connectDB()
+  .then(() => {
+    server.listen(port, () => {
+      console.log(`Server is running at http://localhost:${port}`)
+    })
+  })
+  .catch((err) => {
+    console.log("MongoDB connection error:", err)
+  })
 
 export default app
 

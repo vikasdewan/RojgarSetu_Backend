@@ -1,5 +1,5 @@
 import express from "express"
-import { auth, isOwner, isProfileComplete } from "../middlewares/auth.middleware.js"
+import { auth, isOwner, isProfileComplete } from "../middleware/auth.middleware.js"
 import { getDashboard, applyForVehicleForm, addVehicle, removeVehicle } from "../controllers/owner.controller.js"
 import { uploadVehicleImage } from "../utils/cloudinary.util.js"
 

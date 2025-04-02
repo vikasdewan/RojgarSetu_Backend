@@ -119,6 +119,57 @@ const deleteJobPost = async (req, res) => {
   }
 }
 
+// View a specific job post
+const viewJob = async (req, res) => {
+  try {
+    const { id } = req.params
+    const contractorId = req.profileId
+
+    // Check if job post exists and belongs to this contractor
+    const jobPost = await JobPost.findOne({
+      _id: id,
+      contractorId,
+    })
+
+    if (!jobPost) {
+      return res.status(404).json({ message: "Job post not found or unauthorized" })
+    }
+
+    res.json({ jobPost })
+  } catch (error) {
+    console.error("View job error:", error)
+    res.status(500).json({ message: "Server error", error: error.message })
+  }
+}
+
+// View all jobs posted by the contractor
+const viewAllJobs = async (req, res) => {
+  try {
+    const contractorId = req.profileId
+
+    // Get all job posts for this contractor with pagination
+    const page = Number.parseInt(req.query.page) || 1
+    const limit = Number.parseInt(req.query.limit) || 10
+    const skip = (page - 1) * limit
+
+    const jobPosts = await JobPost.find({ contractorId }).sort({ createdAt: -1 }).skip(skip).limit(limit)
+
+    const total = await JobPost.countDocuments({ contractorId })
+
+    res.json({
+      jobPosts,
+      pagination: {
+        total,
+        page,
+        pages: Math.ceil(total / limit),
+      },
+    })
+  } catch (error) {
+    console.error("View all jobs error:", error)
+    res.status(500).json({ message: "Server error", error: error.message })
+  }
+}
+
 // Create a vehicle/instrument form
 const createVehicleForm = async (req, res) => {
   try {
@@ -226,6 +277,57 @@ const deleteVehicleForm = async (req, res) => {
   }
 }
 
+// View a specific vehicle form
+const viewVehicle = async (req, res) => {
+  try {
+    const { id } = req.params
+    const contractorId = req.profileId
+
+    // Check if vehicle form exists and belongs to this contractor
+    const vehicleForm = await VehicleForm.findOne({
+      _id: id,
+      contractorId,
+    })
+
+    if (!vehicleForm) {
+      return res.status(404).json({ message: "Vehicle form not found or unauthorized" })
+    }
+
+    res.json({ vehicleForm })
+  } catch (error) {
+    console.error("View vehicle error:", error)
+    res.status(500).json({ message: "Server error", error: error.message })
+  }
+}
+
+// View all vehicle forms posted by the contractor
+const viewAllVehicles = async (req, res) => {
+  try {
+    const contractorId = req.profileId
+
+    // Get all vehicle forms for this contractor with pagination
+    const page = Number.parseInt(req.query.page) || 1
+    const limit = Number.parseInt(req.query.limit) || 10
+    const skip = (page - 1) * limit
+
+    const vehicleForms = await VehicleForm.find({ contractorId }).sort({ createdAt: -1 }).skip(skip).limit(limit)
+
+    const total = await VehicleForm.countDocuments({ contractorId })
+
+    res.json({
+      vehicleForms,
+      pagination: {
+        total,
+        page,
+        pages: Math.ceil(total / limit),
+      },
+    })
+  } catch (error) {
+    console.error("View all vehicles error:", error)
+    res.status(500).json({ message: "Server error", error: error.message })
+  }
+}
+
 // Get contractor dashboard data
 const getDashboard = async (req, res) => {
   try {
@@ -284,6 +386,133 @@ const getDashboard = async (req, res) => {
   }
 }
 
+// View all applications (both job and vehicle)
+const viewAllApplications = async (req, res) => {
+  try {
+    const contractorId = req.profileId
+
+    // Get all job posts for this contractor
+    const jobPosts = await JobPost.find({ contractorId })
+
+    // Get all job applications for these job posts
+    const jobApplications = await JobApplication.find({
+      jobPostId: { $in: jobPosts.map((job) => job._id) },
+    })
+      .populate("workerId", "name email phone rating")
+      .populate("jobPostId", "title payscale location")
+
+    // Get all vehicle forms for this contractor
+    const vehicleForms = await VehicleForm.find({ contractorId })
+
+    // Get all vehicle applications for these forms
+    const vehicleApplications = await VehicleApplication.find({
+      vehicleFormId: { $in: vehicleForms.map((form) => form._id) },
+    })
+      .populate({
+        path: "applicantId",
+        select: "name email phone rating",
+        model: (doc) => doc.applicantModel,
+      })
+      .populate("vehicleFormId", "title type payscale")
+
+    res.json({
+      jobApplications,
+      vehicleApplications,
+      total: jobApplications.length + vehicleApplications.length,
+    })
+  } catch (error) {
+    console.error("View all applications error:", error)
+    res.status(500).json({ message: "Server error", error: error.message })
+  }
+}
+
+// View applications for a specific job
+const viewJobApplications = async (req, res) => {
+  try {
+    const { jobId } = req.params
+    const contractorId = req.profileId
+
+    // Check if job post exists and belongs to this contractor
+    const jobPost = await JobPost.findOne({
+      _id: jobId,
+      contractorId,
+    })
+
+    if (!jobPost) {
+      return res.status(404).json({ message: "Job post not found or unauthorized" })
+    }
+
+    // Get all applications for this job
+    const applications = await JobApplication.find({ jobPostId: jobId })
+      .populate("workerId", "name email phone rating")
+      .sort({ appliedAt: -1 })
+
+    // Categorize applications by status
+    const categorized = {
+      underreview: applications.filter((app) => app.status === "underreview"),
+      considering: applications.filter((app) => app.status === "considering"),
+      offerSent: applications.filter((app) => app.status === "offerSent"),
+      offerAccepted: applications.filter((app) => app.status === "offerAccepted"),
+      joiningLetterSent: applications.filter((app) => app.status === "joiningLetterSent"),
+      rejected: applications.filter((app) => app.status === "rejected"),
+    }
+
+    res.json({
+      jobPost,
+      applications,
+      categorized,
+      total: applications.length,
+    })
+  } catch (error) {
+    console.error("View job applications error:", error)
+    res.status(500).json({ message: "Server error", error: error.message })
+  }
+}
+
+// View applications for a specific vehicle form
+const viewVehicleApplications = async (req, res) => {
+  try {
+    const { vehicleId } = req.params
+    const contractorId = req.profileId
+
+    // Check if vehicle form exists and belongs to this contractor
+    const vehicleForm = await VehicleForm.findOne({
+      _id: vehicleId,
+      contractorId,
+    })
+
+    if (!vehicleForm) {
+      return res.status(404).json({ message: "Vehicle form not found or unauthorized" })
+    }
+
+    // Get all applications for this vehicle form
+    const applications = await VehicleApplication.find({ vehicleFormId: vehicleId })
+      .populate({
+        path: "applicantId",
+        select: "name email phone rating",
+        model: (doc) => doc.applicantModel,
+      })
+      .sort({ appliedAt: -1 })
+
+    // Categorize applications by status
+    const categorized = {
+      pending: applications.filter((app) => app.status === "pending"),
+      accepted: applications.filter((app) => app.status === "accepted"),
+      rejected: applications.filter((app) => app.status === "rejected"),
+    }
+
+    res.json({
+      vehicleForm,
+      applications,
+      categorized,
+      total: applications.length,
+    })
+  } catch (error) {
+    console.error("View vehicle applications error:", error)
+    res.status(500).json({ message: "Server error", error: error.message })
+  }
+}
+
 // Process job application (consider, reject, send offer)
 const processJobApplication = async (req, res) => {
   try {
@@ -333,6 +562,9 @@ const processJobApplication = async (req, res) => {
     } else if (action === "sendOffer") {
       // Get contractor details
       const contractor = await Contractor.findById(contractorId)
+
+      // Get contractor details
+      //const contractor = await Contractor.findById(contractorId) //Fixed: removed redeclaration
 
       // Generate offer letter
       const offerLetterResult = await generateOfferLetter({
@@ -581,10 +813,17 @@ export {
   createJobPost,
   updateJobPost,
   deleteJobPost,
+  viewJob,
+  viewAllJobs,
   createVehicleForm,
   updateVehicleForm,
   deleteVehicleForm,
+  viewVehicle,
+  viewAllVehicles,
   getDashboard,
+  viewAllApplications,
+  viewJobApplications,
+  viewVehicleApplications,
   processJobApplication,
   sendJoiningLetter,
   processVehicleApplication,

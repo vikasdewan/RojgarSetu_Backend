@@ -51,6 +51,13 @@ const register = async (req, res) => {
     // Generate token
     const token = user.generateAuthToken()
 
+    // Set token in cookie
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    })
+
     // Return user data and token
     res.status(201).json({
       message: "User registered successfully. Please verify your account with the OTP sent to your phone.",
@@ -91,6 +98,13 @@ const login = async (req, res) => {
     // Generate token
     const token = user.generateAuthToken()
 
+    // Set token in cookie
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    })
+
     // Return user data and token
     res.json({
       user: {
@@ -106,6 +120,19 @@ const login = async (req, res) => {
     })
   } catch (error) {
     console.error("Login error:", error)
+    res.status(500).json({ message: "Server error", error: error.message })
+  }
+}
+
+// Logout user
+const logout = async (req, res) => {
+  try {
+    // Clear the token cookie
+    res.clearCookie("token")
+
+    res.json({ message: "Logged out successfully" })
+  } catch (error) {
+    console.error("Logout error:", error)
     res.status(500).json({ message: "Server error", error: error.message })
   }
 }
@@ -206,5 +233,5 @@ const getCurrentUser = async (req, res) => {
   }
 }
 
-export { register, login, verifyUserOTP, resendOTP, getCurrentUser }
+export { register, login, logout, verifyUserOTP, resendOTP, getCurrentUser }
 
