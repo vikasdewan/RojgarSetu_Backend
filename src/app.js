@@ -78,14 +78,6 @@ connectDB()
     console.log("Mongo DB connection error :: ", err)
   })
 
-// routes import
-// import userRouter from "./routes/user.routes.js"
-// import employerRouter from "./routes/employer.routes.js"
-// import vehicleOwnerRouter from "./routes/vehicleOwner.routes.js"
-// import jobRouter from "./routes/job.routes.js"
-// import applicationRouter from "./routes/application.routes.js"
-// import vehicleRouter from "./routes/vehicle.routes.js"
-
 // New routes import
 import authRoutes from "./routes/auth.routes.js"
 import profileRoutes from "./routes/profile.routes.js"
@@ -95,14 +87,6 @@ import ownerRoutes from "./routes/owner.routes.js"
 import notificationRoutes from "./routes/notification.routes.js"
 import pdfRoutes from "./routes/pdf.routes.js"
 import recommendationRoutes from "./routes/recommendation.routes.js"
-
-// Existing routes declaration
-// app.use("/api/v1/user", userRouter)
-// app.use("/api/v1/vehicleowner", vehicleOwnerRouter)
-// app.use("/api/v1/employer", employerRouter)
-// app.use("/api/v1/vehicle", vehicleRouter)
-// app.use("/api/v1/job", jobRouter)
-// app.use("/api/v1/application", applicationRouter)
 
 // New routes declaration
 app.use("/api/v1/auth", authRoutes)
