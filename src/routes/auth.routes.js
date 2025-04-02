@@ -1,6 +1,6 @@
 import express from "express"
-import { auth } from "../middlewares/auth.middleware.js"
-import { register, login, verifyUserOTP, resendOTP, getCurrentUser } from "../controllers/auth.controller.js"
+import { auth } from "../middleware/auth.middleware.js"
+import { register, login, logout, verifyUserOTP, resendOTP, getCurrentUser } from "../controllers/auth.controller.js"
 
 const router = express.Router()
 
@@ -9,6 +9,9 @@ router.post("/register", register)
 
 // Login user
 router.post("/login", login)
+
+// Logout user
+router.post("/logout", logout)
 
 // Verify OTP
 router.post("/verify-otp", verifyUserOTP)
